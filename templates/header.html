@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <img src="{{ url_for('static', filename='image/logo/logo.svg') }}" alt="logo" class="logo">
+            <nav>
+                <a href="{{ url_for('index') }}">الرئيسية</a>
+                <a href="{{ url_for('about') }}">عن مُحكم</a>
+                <a href="{{ url_for('contact') }}">تواصل معنا</a>
+            </nav>
+        </div>
+    </header>
+</body>
+</html>

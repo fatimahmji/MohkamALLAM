@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>أسأل مًحكم</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/styles.css') }}"
+    />
+    <script>
+      // Load the header dynamically
+      document.addEventListener("DOMContentLoaded", function () {
+        fetch("{{ url_for('header') }}")
+          .then((response) => response.text())
+          .then((data) => {
+            // Insert the header HTML into the page
+            document.getElementById("header-placeholder").innerHTML = data;
+
+            // Highlight the active link based on the current URL
+            const currentPage = window.location.pathname.split("/").pop();
+            const navLinks = document.querySelectorAll("header nav a");
+
+            navLinks.forEach((link) => {
+              const linkPath = link.getAttribute("href").split("/").pop();
+              if (linkPath === currentPage) {
+                link.classList.add("selected");
+              }
+            });
+          });
+      });
+
+      // Function to toggle the sidebar (minimize and expand)
+      function toggleSidebar() {
+        const sidebar = document.querySelector(".sidebar");
+        sidebar.classList.toggle("collapsed");
+      }
+
+      async function sendQuestion() {
+        const userInput = document.getElementById("user-input").value;
+        const responseDiv = document.getElementById("response");
+        const createButton = document.querySelector(
+          "button[onclick='sendQuestion()']"
+        );
+
+        try {
+          createButton.disabled = true;
+          responseDiv.style.display = "block";
+          responseDiv.innerText = "جاري معالجة طلبك...";
+
+          // Log the user input
+          console.log("Sending input:", userInput);
+
+          const response = await fetch("/ask_allam", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ input: userInput }),
+          });
+
+          const data = await response.json();
+
+          // Log the received data
+          console.log("Received data:", data);
+
+          responseDiv.innerText = "";
+
+          if (data.status === "error") {
+            responseDiv.innerText = data.response;
+            responseDiv.style.backgroundColor = "#ffe6e6";
+            return;
+          }
+
+          // Preserve whitespace in the response div
+          responseDiv.style.whiteSpace = "pre-wrap";
+          responseDiv.style.wordWrap = "break-word";
+
+          // Apply typewriter effect with preserved whitespace
+          let i = 0;
+          const generatedText = data.response || "لم يتم العثور على إجابة";
+          const speed = 10;
+
+          function typeWriter() {
+            if (i < generatedText.length) {
+              // Append each character exactly as received
+              const char = generatedText.charAt(i);
+              const textNode = document.createTextNode(char);
+              responseDiv.appendChild(textNode);
+              i++;
+              setTimeout(typeWriter, speed);
+            }
+          }
+          typeWriter();
+        } catch (error) {
+          console.error("Error:", error);
+          responseDiv.innerText = "حدث خطأ أثناء الحصول على الرد";
+          responseDiv.style.backgroundColor = "#ffe6e6";
+        } finally {
+          createButton.disabled = false;
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Main Content Section on the Left -->
+      <div class="main-content-container">
+        <div id="header-placeholder"></div>
+        <!-- Placeholder for dynamic header -->
+        <hr class="divider" />
+        <main class="main-content">
+          <h1>اسأل مُحكم</h1>
+          <div id="chat-area">
+            <div class="user-input-container">
+              <input type="text" id="user-input" placeholder="اكتب سؤالك هنا" />
+              <button onclick="sendQuestion()">
+                <img
+                  src="{{ url_for('static', filename='image/icons/send.png') }}"
+                  alt="إرسال"
+                />
+              </button>
+            </div>
+            <div
+              id="response"
+              style="
+                display: none;
+                margin-top: 20px;
+                padding: 10px;
+                background-color: #eaf4e8;
+                border-radius: 10px;
+                color: #3c4c58;
+                text-align: right;
+              "
+            >
+              <!-- This div will display the model's response -->
+            </div>
+          </div>
+        </main>
+      </div>
+
+      <!-- Sidebar Section on the Right -->
+      <aside class="sidebar">
+        <button class="toggle-button" onclick="toggleSidebar()">
+          <img
+            src="{{ url_for('static', filename='image/icons/side-bar.png') }}"
+            alt="Toggle Sidebar"
+            width="30px"
+          />
+        </button>
+        <h2>الأسئلة السابقة</h2>
+        <hr class="divider" />
+        <ul>
+          <li>ماهي العقوبات التي تُستوجب</li>
+          <li>اشرح لي المادة التاسعة</li>
+          <li>ماهي الاستثناءات المذكورة</li>
+          <li>وفقاً للمادة الثامنة اذكر</li>
+        </ul>
+      </aside>
+    </div>
+  </body>
+</html>
