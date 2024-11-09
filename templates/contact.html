@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}مًحكم{% endblock %}</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/styles.css') }}"
+    />
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        fetch("{{ url_for('header') }}")
+          .then((response) => response.text())
+          .then((data) => {
+            // Insert the header into the page
+            document.getElementById("header-placeholder").innerHTML = data;
+            // fix it
+            // Get the current page URL
+            const currentPage = window.location.pathname.split("/").pop();
+
+            // Find all links in the header
+            const navLinks = document.querySelectorAll("header nav");
+
+            // Loop through the links and add the active-link class to the one that matches the current page
+            navLinks.forEach((link) => {
+              const linkPath = link.getAttribute("href").split("/").pop();
+              if (linkPath === currentPage) {
+                link.classList.add("selected");
+              }
+            });
+          });
+      });
+    </script>
+  </head>
+  <body>
+    <div id="header-placeholder"></div>
+    <div class="container">
+        <hr class="divider"/>
+        <img src="{{ url_for('static', filename='image/logo/فريق_محكم.png') }}" alt="اللوقو" width="20%" style="margin-top: 20px"/>
+
+        <div class="container-row">
+            <div class="contact-container">
+                <h2>فاطمة الجشي</h2>
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <img src="{{ url_for('static', filename='image/icons/linkedin.png') }}" alt="linkedin" width="15px" class="icon">
+                        <a href="https://www.linkedin.com/in/fatimahaljishi2/" target="_blank">Fatimahaljishi2</a>
+                    </div>
+                    <div class="contact-item">
+                        <img src="{{ url_for('static', filename='image/icons/email-white.png') }}" alt="email" width="15px" class="icon">
+                        <a href="mailto:ALjishi.Fatimahm@hotmail.com">ALjishi.Fatimahm@hotmail.com</a>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="contact-container">
+                <h2>آلاء الحجاج</h2>
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <img src="{{ url_for('static', filename='image/icons/linkedin.png') }}" alt="linkedin" width="15px" class="icon"> 
+                        <a href="https://www.linkedin.com/in/alaamlhajjaj/" target="_blank">AlaaMalhajaj</a>
+                    </div>
+                    <div class="contact-item">
+                        <img src="{{ url_for('static', filename='image/icons/email-white.png') }}" alt="email" width="15px" class="icon">
+                        <a href="mailto:Alaa.malhajaj@hotmail.com">Alaa.malhajaj@hotmail.com</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>
+</body>
+</html>
