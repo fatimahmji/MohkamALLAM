@@ -35,7 +35,7 @@ model = Model(
 )
 
 esuser = '3206420058'
-espassword = 'IBM@fatimah123'
+espassword = ''
 eshost = "https://my-elasticsearch-project-bbf7a2.es.us-east-1.aws.elastic.cloud.es.io"
 esport = '443'
 esapi = 'RTNwVkI1TUJkUmNYWGszLVdtS3Q6RkVUR25naGlUV3EtN1JWRk9KUGJfUQ=='
